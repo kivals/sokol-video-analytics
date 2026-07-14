@@ -20,7 +20,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   await apiDelay();
-  await params;
+  const { id } = await params;
+  if (!getScenario(id)) {
+    return NextResponse.json({ error: "camera not found" }, { status: 404 });
+  }
   await req.json().catch(() => null);
   return NextResponse.json({ ok: true, savedAt: new Date().toISOString() });
 }
