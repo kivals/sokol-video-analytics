@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 
 export interface Toast {
-  type: "violation" | "warning";
+  type: "violation" | "warning" | "info";
   title: string;
 }
 
@@ -47,7 +47,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             className={`max-w-sm rounded-lg border px-4 py-3 text-sm shadow-lg backdrop-blur-sm ${
               t.type === "violation"
                 ? "border-[var(--danger)] bg-[var(--danger)]/15 text-[var(--text)]"
-                : "border-[var(--warn)] bg-[var(--warn)]/15 text-[var(--text)]"
+                : t.type === "warning"
+                  ? "border-[var(--warn)] bg-[var(--warn)]/15 text-[var(--text)]"
+                  : "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--text)]"
             }`}
           >
             {t.title}
