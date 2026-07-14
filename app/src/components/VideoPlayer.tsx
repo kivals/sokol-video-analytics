@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { ActionClass, Scenario } from "@/lib/types";
 import { jitter, segmentAt } from "@/lib/scenario";
 import ClassBadge from "./ClassBadge";
@@ -14,6 +14,7 @@ export default function VideoPlayer({
   showBadge = true,
   onTime,
   className,
+  videoRef: externalVideoRef,
 }: {
   scenario: Scenario;
   classes: ActionClass[];
@@ -23,8 +24,10 @@ export default function VideoPlayer({
   showBadge?: boolean;
   onTime?: (t: number) => void;
   className?: string;
+  videoRef?: RefObject<HTMLVideoElement | null>;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const ownVideoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = externalVideoRef ?? ownVideoRef;
   const [reactionLag] = useState(() => 0.5 + Math.random());
   const byId = new Map(classes.map((c) => [c.id, c]));
 
