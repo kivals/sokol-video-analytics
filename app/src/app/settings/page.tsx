@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ActionClass, Camera, Severity } from "@/lib/types";
 import { useToasts } from "@/components/Toasts";
 import rawClasses from "@/data/classes.json";
@@ -17,18 +17,12 @@ const SEVERITY_LABELS: Record<Severity, string> = {
   violation: "Нарушение",
 };
 
-function loadInitialClasses(): ActionClass[] {
-  if (typeof window === "undefined") {
-    return defaultClasses;
-  }
+async function loadStoredClasses(): Promise<ActionClass[] | null> {
   try {
     const raw = localStorage.getItem(CLASSES_STORAGE_KEY);
-    if (!raw) {
-      return defaultClasses;
-    }
-    return JSON.parse(raw) as ActionClass[];
+    return raw ? (JSON.parse(raw) as ActionClass[]) : null;
   } catch {
-    return defaultClasses;
+    return null;
   }
 }
 
@@ -45,7 +39,21 @@ export default function SettingsPage() {
 
 function ClassesPanel() {
   const { push } = useToasts();
-  const [classes, setClasses] = useState<ActionClass[]>(loadInitialClasses);
+  const [classes, setClasses] = useState<ActionClass[]>(defaultClasses);
+
+  // Read the localStorage override after mount to avoid a hydration mismatch
+  // with the statically prerendered HTML (which contains defaultClasses).
+  useEffect(() => {
+    let cancelled = false;
+    loadStoredClasses().then((stored) => {
+      if (stored && !cancelled) {
+        setClasses(stored);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function updateClass(id: string, patch: Partial<ActionClass>) {
     setClasses((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
@@ -54,7 +62,12 @@ function ClassesPanel() {
   function addClass() {
     setClasses((prev) => [
       ...prev,
-      { id: `class-${Date.now()}`, name: "Новый класс", color: "#38bdf8", severity: "normal" },
+      {
+        id: `class-${crypto.randomUUID().slice(0, 8)}`,
+        name: "Новый класс",
+        color: "#38bdf8",
+        severity: "normal",
+      },
     ]);
   }
 
