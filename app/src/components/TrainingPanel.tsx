@@ -53,38 +53,35 @@ export default function TrainingPanel({
 
   useEffect(() => {
     let cancelled = false;
-    let done = false;
 
     async function poll() {
-      const res = await fetch(`/api/train/${jobId}`);
-      if (!res.ok || cancelled) {
-        return;
-      }
-      const data: TrainProgress = await res.json();
-      if (cancelled) {
-        return;
-      }
-      setProgress(data);
-      setPoints((prev) => [
-        ...prev,
-        { epoch: data.epoch, loss: data.loss, accuracy: data.accuracy },
-      ]);
-      if (data.done) {
-        done = true;
-        setFinished(true);
-        push({ type: "info", title: "Обучение завершено" });
-        onDone({ finalLoss: data.loss, finalAccuracy: data.accuracy });
+      try {
+        const res = await fetch(`/api/train/${jobId}`);
+        if (!res.ok || cancelled) {
+          return;
+        }
+        const data: TrainProgress = await res.json();
+        if (cancelled) {
+          return;
+        }
+        setProgress(data);
+        setPoints((prev) => [
+          ...prev,
+          { epoch: data.epoch, loss: data.loss, accuracy: data.accuracy },
+        ]);
+        if (data.done) {
+          clearInterval(interval);
+          setFinished(true);
+          push({ type: "info", title: "Обучение завершено" });
+          onDone({ finalLoss: data.loss, finalAccuracy: data.accuracy });
+        }
+      } catch {
+        // Network hiccup: skip this tick, next interval retries.
       }
     }
 
+    const interval = setInterval(poll, 1000);
     poll();
-    const interval = setInterval(() => {
-      if (done) {
-        clearInterval(interval);
-        return;
-      }
-      poll();
-    }, 1000);
 
     return () => {
       cancelled = true;
