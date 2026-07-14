@@ -1,0 +1,94 @@
+[
+  {
+    "id": "worker-detector",
+    "name": "Детектор работника",
+    "version": "2.4.1",
+    "metrics": {
+      "accuracy": 0.981,
+      "latencyMs": 34,
+      "f1": 0.978
+    },
+    "history": [
+      {
+        "id": "run-001",
+        "startedAt": "2026-06-01T08:30:00Z",
+        "epochs": 24,
+        "finalLoss": 0.08,
+        "finalAccuracy": 0.972
+      },
+      {
+        "id": "run-002",
+        "startedAt": "2026-06-08T10:15:00Z",
+        "epochs": 24,
+        "finalLoss": 0.06,
+        "finalAccuracy": 0.979
+      },
+      {
+        "id": "run-003",
+        "startedAt": "2026-06-15T14:45:00Z",
+        "epochs": 24,
+        "finalLoss": 0.05,
+        "finalAccuracy": 0.981
+      }
+    ]
+  },
+  {
+    "id": "hands-detector",
+    "name": "Детектор положения рук",
+    "version": "1.8.2",
+    "metrics": {
+      "accuracy": 0.964,
+      "latencyMs": 41,
+      "f1": 0.961
+    },
+    "history": [
+      {
+        "id": "run-004",
+        "startedAt": "2026-06-03T09:00:00Z",
+        "epochs": 24,
+        "finalLoss": 0.11,
+        "finalAccuracy": 0.951
+      },
+      {
+        "id": "run-005",
+        "startedAt": "2026-06-10T11:30:00Z",
+        "epochs": 24,
+        "finalLoss": 0.07,
+        "finalAccuracy": 0.964
+      }
+    ]
+  },
+  {
+    "id": "action-classifier",
+    "name": "Классификатор действий",
+    "version": "3.1.0",
+    "metrics": {
+      "accuracy": 0.974,
+      "latencyMs": 118,
+      "f1": 0.971
+    },
+    "history": [
+      {
+        "id": "run-006",
+        "startedAt": "2026-06-02T07:15:00Z",
+        "epochs": 24,
+        "finalLoss": 0.09,
+        "finalAccuracy": 0.964
+      },
+      {
+        "id": "run-007",
+        "startedAt": "2026-06-09T13:20:00Z",
+        "epochs": 24,
+        "finalLoss": 0.06,
+        "finalAccuracy": 0.972
+      },
+      {
+        "id": "run-008",
+        "startedAt": "2026-06-16T16:00:00Z",
+        "epochs": 24,
+        "finalLoss": 0.05,
+        "finalAccuracy": 0.974
+      }
+    ]
+  }
+]

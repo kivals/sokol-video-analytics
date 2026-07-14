@@ -1,0 +1,13 @@
+{
+  "cameraId": "camera-3",
+  "video": "/videos/camera-3.mp4",
+  "zone": { "x": 0.25, "y": 0.1, "w": 0.55, "h": 0.75 },
+  "segments": [
+    { "start": 0,   "end": 25,  "classId": "work",    "confidence": 0.97 },
+    { "start": 25,  "end": 40,  "classId": "setup",   "confidence": 0.95 },
+    { "start": 40,  "end": 65,  "classId": "quality", "confidence": 0.98 },
+    { "start": 65,  "end": 88,  "classId": "work",    "confidence": 0.94 },
+    { "start": 88,  "end": 106, "classId": "waiting", "confidence": 0.96 },
+    { "start": 106, "end": 120, "classId": "absent",  "confidence": 0.99 }
+  ]
+}

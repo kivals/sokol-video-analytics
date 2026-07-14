@@ -1,0 +1,8 @@
+[
+  { "id": "work",    "name": "Работа за станком",      "color": "#22c55e", "severity": "normal",    "description": "Работник в зоне, выполняет операцию" },
+  { "id": "setup",   "name": "Наладка оборудования",   "color": "#38bdf8", "severity": "normal",    "description": "Настройка и подготовка станка" },
+  { "id": "quality", "name": "Контроль качества",      "color": "#a78bfa", "severity": "normal",    "description": "Осмотр и измерение детали" },
+  { "id": "waiting", "name": "Ожидание",               "color": "#eab308", "severity": "warning",   "description": "Работник в зоне, операция не выполняется" },
+  { "id": "absent",  "name": "Отсутствует в зоне",     "color": "#ef4444", "severity": "warning",   "description": "Работник покинул рабочую зону" },
+  { "id": "phone",   "name": "Посторонняя активность", "color": "#f59e0b", "severity": "violation", "description": "Телефон в руках, отвлечение от работы" }
+]

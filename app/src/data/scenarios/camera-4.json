@@ -1,0 +1,16 @@
+{
+  "cameraId": "camera-4",
+  "video": "/videos/camera-4.mp4",
+  "zone": { "x": 0.1, "y": 0.2, "w": 0.7, "h": 0.6 },
+  "segments": [
+    { "start": 0,   "end": 30,  "classId": "work",    "confidence": 0.99 },
+    { "start": 30,  "end": 48,  "classId": "phone",   "confidence": 0.96 },
+    { "start": 48,  "end": 72,  "classId": "work",    "confidence": 0.97 },
+    { "start": 72,  "end": 95,  "classId": "absent",  "confidence": 0.95 },
+    { "start": 95,  "end": 110, "classId": "setup",   "confidence": 0.98 },
+    { "start": 110, "end": 120, "classId": "quality", "confidence": 0.94 }
+  ],
+  "events": [
+    { "time": 55.2, "type": "violation", "title": "Отсутствует защитная каска" }
+  ]
+}
