@@ -17,3 +17,12 @@ body {
   background: var(--bg);
   color: var(--text);
 }
+
+@keyframes pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--danger);
+  }
+  50% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
