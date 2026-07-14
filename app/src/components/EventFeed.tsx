@@ -1,14 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import type { DerivedEvent } from "@/lib/scenario";
 
 const SHIFT_START_HOUR = 8;
 
-function formatTimestamp(seconds: number): string {
+function shiftBase(): number {
   const base = new Date();
   base.setHours(SHIFT_START_HOUR, 0, 0, 0);
-  base.setSeconds(base.getSeconds() + seconds);
-  return base.toLocaleTimeString("ru-RU", {
+  return base.getTime();
+}
+
+function formatTimestamp(baseMs: number, seconds: number): string {
+  return new Date(baseMs + seconds * 1000).toLocaleTimeString("ru-RU", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -28,6 +32,8 @@ export default function EventFeed({
   events: DerivedEvent[];
   cameraName: string;
 }) {
+  const [baseMs] = useState(shiftBase);
+
   return (
     <div className="rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3">
       <div className="mb-2 text-sm font-medium text-[var(--text)]">
@@ -57,7 +63,7 @@ export default function EventFeed({
               >
                 <div className="flex flex-col">
                   <span className="text-[var(--text)]">{ev.title}</span>
-                  <span className="text-xs text-[var(--muted)]">{formatTimestamp(ev.time)}</span>
+                  <span className="text-xs text-[var(--muted)]">{formatTimestamp(baseMs, ev.time)}</span>
                 </div>
                 <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${chipClass}`}>
                   {TYPE_LABEL[ev.type]}

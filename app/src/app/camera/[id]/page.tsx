@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { ActionClass, Camera, Scenario } from "@/lib/types";
@@ -45,6 +45,11 @@ export default function CameraDetailPage() {
     };
   }, [camera]);
 
+  const events = useMemo(
+    () => (scenario ? deriveEvents(scenario, classes) : []),
+    [scenario],
+  );
+
   if (!camera) {
     return (
       <div className="p-6">
@@ -57,8 +62,6 @@ export default function CameraDetailPage() {
       </div>
     );
   }
-
-  const events = scenario ? deriveEvents(scenario, classes) : [];
 
   function handleSeek(t: number) {
     setCurrentTime(t);
