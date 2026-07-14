@@ -3,3 +3,4 @@ node_modules/
 .env*
 .superpowers/
 .DS_Store
+app/public/videos/*.mp4

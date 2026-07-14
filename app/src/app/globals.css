@@ -26,3 +26,8 @@ body {
     box-shadow: 0 0 0 4px transparent;
   }
 }
+
+@keyframes noise-shift {
+  0% { background-position: 0 0; }
+  100% { background-position: 8px 8px; }
+}
