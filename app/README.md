@@ -47,7 +47,10 @@ Drop real footage into `public/videos/camera-1.mp4` … `camera-6.mp4`:
 - Format: H.264 MP4, ideally with the `moov` atom at the front ("faststart")
   so the browser can read metadata without downloading the whole file
   (`ffmpeg -i in.mp4 -c copy -movflags +faststart camera-1.mp4`)
-- Length: 2–4 minutes is enough to see all scenario segments loop
+- Length: annotate segments covering the full video duration — the class
+  badge, timeline playhead, and toast notifications all follow the scenario's
+  cycle, so a video longer than the last annotated segment will loop back
+  to the start of the scenario before the video itself ends
 - Content: a static, unmoving camera angle — the annotation zone overlay and
   scenario timings are drawn in fixed screen-space coordinates and assume the
   frame doesn't pan/zoom
@@ -62,8 +65,13 @@ If a video file is missing (or fails to load), the player falls back to a
 3. Add or edit segments (start/end in seconds, action class, confidence) —
    segment class + confidence drive the badge shown on the video and the
    "Работник в зоне" / "нарушение" classification used throughout the app.
-4. Add point events (e.g. "Отсутствует защитная каска") for one-off toast
-   notifications at a specific timestamp.
+4. Point events (e.g. "Отсутствует защитная каска") for one-off toast
+   notifications are not editable from the `/annotation` UI yet — add them by
+   hand to the scenario's `events` array (`{ time, type: "violation" |
+   "warning", title }`) in `src/data/scenarios/camera-N.json`, or via
+   `localStorage` under `sokol:scenario:camera-N` (same shape). Manual edits
+   to that `events` array survive subsequent `/annotation` saves — the editor
+   only rewrites `zone` and `segments`.
 5. Click **Сохранить** to persist to `localStorage` for local testing, or
    **Экспорт JSON** to download the scenario file — copy the downloaded file
    into `src/data/scenarios/camera-N.json` to make it the new baseline for

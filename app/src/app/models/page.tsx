@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ModelInfo, TrainRun } from "@/lib/types";
 import TrainingPanel, { type TrainingResult } from "@/components/TrainingPanel";
 
@@ -14,8 +14,11 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("ru-RU");
 }
 
+const TRAINING_STORAGE_KEY = "sokol:training";
+
 export default function ModelsPage() {
   const [models, setModels] = useState<ModelInfo[] | null>(null);
+  const [error, setError] = useState(false);
   const [activeTraining, setActiveTraining] = useState<{
     modelId: string;
     jobId: string;
@@ -23,8 +26,32 @@ export default function ModelsPage() {
 
   useEffect(() => {
     fetch("/api/models")
-      .then((res) => res.json())
-      .then((data: { models: ModelInfo[] }) => setModels(data.models));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("bad response");
+        }
+        return res.json();
+      })
+      .then((data: { models: ModelInfo[] }) => setModels(data.models))
+      .catch(() => setError(true));
+  }, []);
+
+  useEffect(() => {
+    const raw = sessionStorage.getItem(TRAINING_STORAGE_KEY);
+    if (!raw) {
+      return;
+    }
+    const saved: { modelId: string; jobId: string } = JSON.parse(raw);
+    fetch(`/api/train/${saved.jobId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { done: boolean } | null) => {
+        if (!data || data.done) {
+          sessionStorage.removeItem(TRAINING_STORAGE_KEY);
+          return;
+        }
+        setActiveTraining(saved);
+      })
+      .catch(() => sessionStorage.removeItem(TRAINING_STORAGE_KEY));
   }, []);
 
   const handleStart = useCallback(async (modelId: string) => {
@@ -33,7 +60,21 @@ export default function ModelsPage() {
       return;
     }
     const data: { jobId: string } = await res.json();
+    sessionStorage.setItem(
+      TRAINING_STORAGE_KEY,
+      JSON.stringify({ modelId, jobId: data.jobId }),
+    );
     setActiveTraining({ modelId, jobId: data.jobId });
+  }, []);
+
+  const doneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (doneTimeoutRef.current) {
+        clearTimeout(doneTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleDone = useCallback(
@@ -62,10 +103,21 @@ export default function ModelsPage() {
             })
           : prev,
       );
-      setActiveTraining(null);
+      sessionStorage.removeItem(TRAINING_STORAGE_KEY);
+      // Keep the panel mounted for a bit so the "Обучение завершено" state
+      // (final charts) is visible instead of disappearing instantly.
+      doneTimeoutRef.current = setTimeout(() => setActiveTraining(null), 4000);
     },
     [],
   );
+
+  if (error) {
+    return (
+      <div className="p-6 text-sm text-[var(--danger)]">
+        Не удалось загрузить данные
+      </div>
+    );
+  }
 
   if (!models) {
     return <div className="p-6 text-sm text-[var(--muted)]">Загрузка...</div>;

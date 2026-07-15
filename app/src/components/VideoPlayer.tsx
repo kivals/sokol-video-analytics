@@ -13,6 +13,7 @@ export default function VideoPlayer({
   showZone = true,
   showBadge = true,
   onTime,
+  onError,
   className,
   videoRef: externalVideoRef,
 }: {
@@ -23,6 +24,7 @@ export default function VideoPlayer({
   showZone?: boolean;
   showBadge?: boolean;
   onTime?: (t: number) => void;
+  onError?: () => void;
   className?: string;
   videoRef?: RefObject<HTMLVideoElement | null>;
 }) {
@@ -75,7 +77,10 @@ export default function VideoPlayer({
           muted={muted}
           loop={loop}
           onTimeUpdate={handleTimeUpdate}
-          onError={() => setVideoError(true)}
+          onError={() => {
+            setVideoError(true);
+            onError?.();
+          }}
         />
       )}
 

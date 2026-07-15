@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { ActionClass, Camera, Scenario } from "@/lib/types";
 import { loadScenario } from "@/lib/clientScenarios";
-import { deriveEvents } from "@/lib/scenario";
+import { scenarioDuration } from "@/lib/scenario";
 import VideoPlayer from "./VideoPlayer";
 import { useToasts } from "./Toasts";
 import rawClasses from "@/data/classes.json";
@@ -16,6 +16,7 @@ export default function CameraTile({ camera }: { camera: Camera }) {
   const { push } = useToasts();
   const [scenario, setScenario] = useState<Scenario | null>(null);
   const [dropped, setDropped] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [latencyMs, setLatencyMs] = useState(1200);
   const [fps, setFps] = useState(25);
@@ -31,6 +32,7 @@ export default function CameraTile({ camera }: { camera: Camera }) {
       .then((s) => {
         if (!cancelled) {
           setScenario(s);
+          setVideoError(false);
         }
       })
       .catch(() => {
@@ -43,10 +45,9 @@ export default function CameraTile({ camera }: { camera: Camera }) {
     };
   }, [camera.id]);
 
-  const events = useMemo(
-    () => (scenario ? deriveEvents(scenario, classes) : []),
-    [scenario],
-  );
+  // Only toast point events from the scenario's `events` array — segment
+  // transitions (derived events) fire too often to be worth a toast.
+  const toastEvents = useMemo(() => scenario?.events ?? [], [scenario]);
 
   useEffect(() => {
     if (dropped || !scenario) {
@@ -74,16 +75,21 @@ export default function CameraTile({ camera }: { camera: Camera }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handleTime(t: number) {
-    timeRef.current = t;
+  function handleTime(rawT: number) {
+    timeRef.current = rawT;
+    if (!scenario) {
+      return;
+    }
+    const duration = scenarioDuration(scenario);
+    const t = duration > 0 ? rawT % duration : rawT;
 
     if (t < lastTimeRef.current - 1) {
-      // video looped back to the start
+      // scenario looped back to the start
       firedRef.current.clear();
     }
     lastTimeRef.current = t;
 
-    for (const ev of events) {
+    for (const ev of toastEvents) {
       if (ev.type === "info") {
         continue;
       }
@@ -129,7 +135,13 @@ export default function CameraTile({ camera }: { camera: Camera }) {
             </div>
           </div>
         ) : (
-          <VideoPlayer scenario={scenario} classes={classes} showBadge onTime={handleTime} />
+          <VideoPlayer
+            scenario={scenario}
+            classes={classes}
+            showBadge
+            onTime={handleTime}
+            onError={() => setVideoError(true)}
+          />
         )}
 
         <div ref={menuRef} className="absolute right-1 top-1 z-10">
@@ -159,9 +171,11 @@ export default function CameraTile({ camera }: { camera: Camera }) {
         <div className="text-sm font-medium text-[var(--text)]">{camera.name}</div>
         <div className="text-xs text-[var(--muted)]">{camera.area}</div>
         <div
-          className={`mt-1 text-xs ${dropped ? "text-[var(--danger)]" : "text-[var(--muted)]"}`}
+          className={`mt-1 text-xs ${
+            dropped || videoError ? "text-[var(--danger)]" : "text-[var(--muted)]"
+          }`}
         >
-          {dropped
+          {dropped || videoError
             ? "Нет сигнала"
             : `LIVE • ${fps} fps • задержка ${latencySeconds} с`}
         </div>

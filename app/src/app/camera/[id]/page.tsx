@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { ActionClass, Camera, Scenario } from "@/lib/types";
 import { loadScenario } from "@/lib/clientScenarios";
-import { deriveEvents } from "@/lib/scenario";
+import { deriveEvents, scenarioDuration } from "@/lib/scenario";
 import VideoPlayer from "@/components/VideoPlayer";
 import SegmentTimeline from "@/components/SegmentTimeline";
 import EventFeed from "@/components/EventFeed";
@@ -70,6 +70,19 @@ export default function CameraDetailPage() {
     }
   }
 
+  function handleExport() {
+    if (!scenario) {
+      return;
+    }
+    const blob = new Blob([JSON.stringify(scenario, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${scenario.cameraId}-annotation.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -84,13 +97,14 @@ export default function CameraDetailPage() {
           <div className="text-sm text-[var(--muted)]">{camera.area}</div>
         </div>
         <div className="flex gap-2">
-          <a
-            href={`/api/export/${camera.id}`}
-            download
-            className="rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-1.5 text-sm text-[var(--text)] hover:border-[var(--accent)]"
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={!scenario}
+            className="rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-1.5 text-sm text-[var(--text)] hover:border-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Выгрузить разметку (JSON)
-          </a>
+          </button>
           <Link
             href={`/annotation?camera=${camera.id}`}
             className="rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-1.5 text-sm text-[var(--text)] hover:border-[var(--accent)]"
@@ -113,7 +127,11 @@ export default function CameraDetailPage() {
               <SegmentTimeline
                 scenario={scenario}
                 classes={classes}
-                currentTime={currentTime}
+                currentTime={
+                  scenarioDuration(scenario) > 0
+                    ? currentTime % scenarioDuration(scenario)
+                    : currentTime
+                }
                 onSeek={handleSeek}
               />
               <div className="flex flex-wrap gap-3">
