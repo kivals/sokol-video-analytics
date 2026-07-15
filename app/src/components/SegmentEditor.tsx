@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ActionClass, Segment } from "@/lib/types";
 
 // Controlled numeric input that round-trips through Number on every keystroke
@@ -11,19 +11,27 @@ function NumberField({
   value,
   onCommit,
   className,
+  min,
+  max,
 }: {
   value: number;
   onCommit: (n: number) => void;
   className?: string;
+  min?: number;
+  max?: number;
 }) {
   const [text, setText] = useState(String(value));
   const [focused, setFocused] = useState(false);
+  const [prevValue, setPrevValue] = useState(value);
 
-  useEffect(() => {
+  // Sync external value changes into the local text while not editing
+  // (state adjustment during render instead of an effect).
+  if (value !== prevValue) {
+    setPrevValue(value);
     if (!focused) {
       setText(String(value));
     }
-  }, [value, focused]);
+  }
 
   return (
     <input
@@ -34,10 +42,19 @@ function NumberField({
       onChange={(e) => setText(e.target.value)}
       onBlur={() => {
         setFocused(false);
-        const parsed = Number(text.replace(",", "."));
-        if (!Number.isNaN(parsed)) {
-          onCommit(parsed);
+        let parsed = Number(text.replace(",", "."));
+        if (Number.isNaN(parsed)) {
+          setText(String(value));
+          return;
         }
+        if (min !== undefined) {
+          parsed = Math.max(min, parsed);
+        }
+        if (max !== undefined) {
+          parsed = Math.min(max, parsed);
+        }
+        setText(String(parsed));
+        onCommit(parsed);
       }}
       className={className}
     />
@@ -92,6 +109,7 @@ export default function SegmentEditor({
               <td className="py-1.5 pr-2">
                 <NumberField
                   value={seg.start}
+                  min={0}
                   onCommit={(start) => updateSegment(i, { start })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />
@@ -99,6 +117,7 @@ export default function SegmentEditor({
               <td className="py-1.5 pr-2">
                 <NumberField
                   value={seg.end}
+                  min={0}
                   onCommit={(end) => updateSegment(i, { end })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />
@@ -119,6 +138,8 @@ export default function SegmentEditor({
               <td className="py-1.5 pr-2">
                 <NumberField
                   value={seg.confidence}
+                  min={0.5}
+                  max={0.999}
                   onCommit={(confidence) => updateSegment(i, { confidence })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />

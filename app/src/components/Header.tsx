@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname, useParams } from "next/navigation";
 import type { Camera } from "@/lib/types";
 import camerasData from "@/data/cameras.json";
@@ -21,7 +21,7 @@ function useBreadcrumb(): string {
 
   if (pathname.startsWith("/camera/") && params.id) {
     const camera = cameras.find((c) => c.id === params.id);
-    return camera?.name ?? pathname;
+    return camera?.name ?? "Камера не найдена";
   }
 
   return BREADCRUMBS[pathname] ?? pathname;
@@ -35,16 +35,20 @@ function clampGpu(value: number): number {
   return Math.min(78, Math.max(62, value));
 }
 
+const emptySubscribe = () => () => {};
+
 export default function Header() {
   const breadcrumb = useBreadcrumb();
-  const [mounted, setMounted] = useState(false);
+  // true on the client after hydration, false during SSR — gates the live
+  // values so the server and first client render match.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const [gpu, setGpu] = useState(randomGpu);
   const [frames, setFrames] = useState(1284503);
   const [now, setNow] = useState(() => new Date());
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
