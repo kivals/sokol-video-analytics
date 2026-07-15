@@ -41,7 +41,13 @@ export default function ModelsPage() {
     if (!raw) {
       return;
     }
-    const saved: { modelId: string; jobId: string } = JSON.parse(raw);
+    let saved: { modelId: string; jobId: string };
+    try {
+      saved = JSON.parse(raw);
+    } catch {
+      sessionStorage.removeItem(TRAINING_STORAGE_KEY);
+      return;
+    }
     fetch(`/api/train/${saved.jobId}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { done: boolean } | null) => {
