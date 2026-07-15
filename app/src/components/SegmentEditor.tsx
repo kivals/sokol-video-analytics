@@ -1,6 +1,48 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { ActionClass, Segment } from "@/lib/types";
+
+// Controlled numeric input that round-trips through Number on every keystroke
+// truncates a trailing "." or "," while typing (e.g. "0." -> 0 -> "0"), making it
+// impossible to type decimals. Keep the raw text as local state while focused and
+// only commit the parsed number on blur.
+function NumberField({
+  value,
+  onCommit,
+  className,
+}: {
+  value: number;
+  onCommit: (n: number) => void;
+  className?: string;
+}) {
+  const [text, setText] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (!focused) {
+      setText(String(value));
+    }
+  }, [value, focused]);
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={text}
+      onFocus={() => setFocused(true)}
+      onChange={(e) => setText(e.target.value)}
+      onBlur={() => {
+        setFocused(false);
+        const parsed = Number(text.replace(",", "."));
+        if (!Number.isNaN(parsed)) {
+          onCommit(parsed);
+        }
+      }}
+      className={className}
+    />
+  );
+}
 
 export default function SegmentEditor({
   segments,
@@ -48,18 +90,16 @@ export default function SegmentEditor({
           {segments.map((seg, i) => (
             <tr key={i} className="border-t border-[var(--border)]">
               <td className="py-1.5 pr-2">
-                <input
-                  type="number"
+                <NumberField
                   value={seg.start}
-                  onChange={(e) => updateSegment(i, { start: Number(e.target.value) })}
+                  onCommit={(start) => updateSegment(i, { start })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />
               </td>
               <td className="py-1.5 pr-2">
-                <input
-                  type="number"
+                <NumberField
                   value={seg.end}
-                  onChange={(e) => updateSegment(i, { end: Number(e.target.value) })}
+                  onCommit={(end) => updateSegment(i, { end })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />
               </td>
@@ -77,13 +117,9 @@ export default function SegmentEditor({
                 </select>
               </td>
               <td className="py-1.5 pr-2">
-                <input
-                  type="number"
-                  min={0.9}
-                  max={0.99}
-                  step={0.01}
+                <NumberField
                   value={seg.confidence}
-                  onChange={(e) => updateSegment(i, { confidence: Number(e.target.value) })}
+                  onCommit={(confidence) => updateSegment(i, { confidence })}
                   className="w-20 rounded border border-[var(--border)] bg-[var(--panel-2)] px-2 py-1 text-[var(--text)]"
                 />
               </td>
