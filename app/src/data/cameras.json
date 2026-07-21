@@ -1,38 +1,8 @@
 [
   {
     "id": "camera-1",
-    "name": "Камера 1 — Токарный участок",
-    "area": "Цех №1",
-    "video": "/videos/camera-1.mp4"
-  },
-  {
-    "id": "camera-2",
-    "name": "Камера 2 — Фрезерный станок",
-    "area": "Цех №1",
-    "video": "/videos/camera-2.mp4"
-  },
-  {
-    "id": "camera-3",
-    "name": "Камера 3 — Сборочный участок",
-    "area": "Цех №2",
-    "video": "/videos/camera-3.mp4"
-  },
-  {
-    "id": "camera-4",
-    "name": "Камера 4 — Контрольная площадка",
-    "area": "Цех №2",
-    "video": "/videos/camera-4.mp4"
-  },
-  {
-    "id": "camera-5",
-    "name": "Камера 5 — Шлифовальный участок",
-    "area": "Цех №1",
-    "video": "/videos/camera-5.mp4"
-  },
-  {
-    "id": "camera-6",
-    "name": "Камера 6 — Упаковка и отгрузка",
-    "area": "Цех №2",
-    "video": "/videos/camera-6.mp4"
+    "name": "Камера 1 — Цех обслуживания спецтехники",
+    "area": "Ремонтный бокс",
+    "video": "/videos/camera-main.mp4"
   }
 ]

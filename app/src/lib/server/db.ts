@@ -13,11 +13,12 @@ const classes = classesData as ActionClass[];
 const cameras = camerasData as Camera[];
 const models = modelsData as ModelInfo[];
 
+const cameraIds = new Set(cameras.map((c) => c.id));
+
 const scenarios = new Map<string, Scenario>(
-  [camera1, camera2, camera3, camera4, camera5, camera6].map((s) => [
-    (s as Scenario).cameraId,
-    s as Scenario,
-  ]),
+  [camera1, camera2, camera3, camera4, camera5, camera6]
+    .filter((s) => cameraIds.has((s as Scenario).cameraId))
+    .map((s) => [(s as Scenario).cameraId, s as Scenario]),
 );
 
 export function getCameras(): Camera[] {

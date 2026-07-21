@@ -1,8 +1,8 @@
 [
-  { "id": "work",    "name": "Работа за станком",      "color": "#22c55e", "severity": "normal",    "description": "Работник в зоне, выполняет операцию" },
-  { "id": "setup",   "name": "Наладка оборудования",   "color": "#38bdf8", "severity": "normal",    "description": "Настройка и подготовка станка" },
-  { "id": "quality", "name": "Контроль качества",      "color": "#a78bfa", "severity": "normal",    "description": "Осмотр и измерение детали" },
-  { "id": "waiting", "name": "Ожидание",               "color": "#eab308", "severity": "warning",   "description": "Работник в зоне, операция не выполняется" },
-  { "id": "absent",  "name": "Отсутствует в зоне",     "color": "#ef4444", "severity": "warning",   "description": "Работник покинул рабочую зону" },
-  { "id": "phone",   "name": "Посторонняя активность", "color": "#f59e0b", "severity": "violation", "description": "Телефон в руках, отвлечение от работы" }
+  { "id": "service", "name": "Обслуживание техники",  "color": "#22c55e", "severity": "normal",    "description": "Работник выполняет ремонт или ТО спецтехники на посту" },
+  { "id": "transit", "name": "Перемещение по цеху",   "color": "#38bdf8", "severity": "normal",    "description": "Работник перемещается между постами, катит тележку" },
+  { "id": "loading", "name": "Погрузочные работы",    "color": "#2dd4bf", "severity": "normal",    "description": "Работа с погрузчиком, перемещение узлов и грузов" },
+  { "id": "idle",    "name": "Простой поста",         "color": "#eab308", "severity": "warning",   "description": "Техника на посту, работы не ведутся" },
+  { "id": "absent",  "name": "Отсутствие в зоне",     "color": "#f59e0b", "severity": "warning",   "description": "В рабочей зоне нет персонала" },
+  { "id": "safety",  "name": "Нарушение ТБ",          "color": "#ef4444", "severity": "violation", "description": "Работы под поднятым кузовом без фиксации или без СИЗ" }
 ]

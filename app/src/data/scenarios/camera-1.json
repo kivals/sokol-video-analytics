@@ -1,15 +1,23 @@
 {
   "cameraId": "camera-1",
-  "video": "/videos/camera-1.mp4",
-  "zone": { "x": 0.2, "y": 0.15, "w": 0.6, "h": 0.7 },
+  "video": "/videos/camera-main.mp4",
+  "zone": { "x": 0.22, "y": 0.18, "w": 0.56, "h": 0.6 },
   "segments": [
-    { "start": 0,   "end": 35,  "classId": "work",    "confidence": 0.98 },
-    { "start": 35,  "end": 52,  "classId": "phone",   "confidence": 0.95 },
-    { "start": 52,  "end": 80,  "classId": "work",    "confidence": 0.97 },
-    { "start": 80,  "end": 101, "classId": "absent",  "confidence": 0.99 },
-    { "start": 101, "end": 120, "classId": "work",    "confidence": 0.98 }
+    { "start": 0,   "end": 20,  "classId": "transit", "confidence": 0.95 },
+    { "start": 20,  "end": 42,  "classId": "loading", "confidence": 0.92 },
+    { "start": 42,  "end": 65,  "classId": "idle",    "confidence": 0.90 },
+    { "start": 65,  "end": 98,  "classId": "service", "confidence": 0.97 },
+    { "start": 98,  "end": 115, "classId": "transit", "confidence": 0.94 },
+    { "start": 115, "end": 150, "classId": "service", "confidence": 0.96 },
+    { "start": 150, "end": 170, "classId": "safety",  "confidence": 0.93 },
+    { "start": 170, "end": 180, "classId": "service", "confidence": 0.96 },
+    { "start": 180, "end": 205, "classId": "transit", "confidence": 0.94 },
+    { "start": 205, "end": 264, "classId": "service", "confidence": 0.96 },
+    { "start": 264, "end": 280, "classId": "absent",  "confidence": 0.91 }
   ],
   "events": [
-    { "time": 63.5, "type": "violation", "title": "Отсутствует защитная каска" }
+    { "time": 42,  "type": "warning",   "title": "Простой поста обслуживания" },
+    { "time": 150, "type": "violation", "title": "Работы под поднятым кузовом без фиксации" },
+    { "time": 264, "type": "warning",   "title": "Рабочая зона покинута персоналом" }
   ]
 }

@@ -40,7 +40,7 @@ export async function GET() {
   return NextResponse.json({
     accuracy: 0.974,
     latencySeconds: 1.2,
-    streams: { active: 6, total: 6 },
+    streams: { active: cameras.length, total: cameras.length },
     framesProcessed: 1_284_503 + (Math.floor(Date.now() / 1000) % 100_000),
     timeByClass: timeByClassMerged,
     violationsByCamera,
