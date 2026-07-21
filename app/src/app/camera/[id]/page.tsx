@@ -121,6 +121,8 @@ export default function CameraDetailPage() {
               <VideoPlayer
                 scenario={scenario}
                 classes={classes}
+                detect
+                sourceLabel={camera.name}
                 onTime={setCurrentTime}
                 videoRef={videoRef}
               />

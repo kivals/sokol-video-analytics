@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { ActionClass, Scenario } from "@/lib/types";
 import { jitter, segmentAt } from "@/lib/scenario";
 import ClassBadge from "./ClassBadge";
+import DetectionOverlay from "./DetectionOverlay";
 
 export default function VideoPlayer({
   scenario,
@@ -12,6 +13,8 @@ export default function VideoPlayer({
   loop = true,
   showZone = true,
   showBadge = true,
+  detect = false,
+  sourceLabel,
   onTime,
   onError,
   className,
@@ -23,6 +26,8 @@ export default function VideoPlayer({
   loop?: boolean;
   showZone?: boolean;
   showBadge?: boolean;
+  detect?: boolean;
+  sourceLabel?: string;
   onTime?: (t: number) => void;
   onError?: () => void;
   className?: string;
@@ -84,7 +89,15 @@ export default function VideoPlayer({
         />
       )}
 
-      {showZone && !videoError && (
+      {detect && !videoError && (
+        <DetectionOverlay
+          videoRef={videoRef}
+          cameraId={scenario.cameraId}
+          sourceLabel={sourceLabel}
+        />
+      )}
+
+      {showZone && !detect && !videoError && (
         <div
           className="absolute border-2 border-[var(--accent)]"
           style={{
