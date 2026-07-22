@@ -42,7 +42,7 @@ def mmss(t):
 def main():
     d = json.load(open(DET))
     stat = defaultdict(lambda: {"n": 0, "area": 0.0, "tmin": 1e9, "tmax": 0,
-                                "xs": [], "ys": []})
+                                "xs": [], "ys": [], "zones": defaultdict(int)})
     for fr in d["frames"]:
         for b in fr["boxes"]:
             x, y, w, h, _, tid = b
@@ -53,6 +53,7 @@ def main():
             s["tmax"] = max(s["tmax"], fr["t"])
             s["xs"].append(x + w / 2)
             s["ys"].append(y + h / 2)
+            s["zones"][zone(fr["t"])[0]] += 1
 
     violators, registry = {}, []
     for tid, s in stat.items():
@@ -64,7 +65,10 @@ def main():
                             max(s["ys"]) - min(s["ys"]))
         if travel > MAX_TRAVEL:                       # passing through, not working
             continue
-        code, name = zone(s["tmin"])
+        # Zone the worker by where they spend most frames, not first sighting:
+        # a track that starts in the aisle but works at a bench counts as the bench.
+        best = max(s["zones"], key=s["zones"].get)
+        code, name = next((c, n) for lo, hi, c, n in ZONES if c == best) if best != "A" else ("A", "")
         if code == "A":
             continue
         v = ["no_helmet", "no_vest"]
