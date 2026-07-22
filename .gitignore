@@ -1,8 +1,0 @@
-node_modules/
-.next/
-.env*
-.DS_Store
-.idea/
-*.pt
-app/public/videos/*.mp4
-*-preview.mp4
