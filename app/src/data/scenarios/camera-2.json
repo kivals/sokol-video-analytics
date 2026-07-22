@@ -1,12 +1,20 @@
 {
   "cameraId": "camera-2",
-  "video": "/videos/camera-2.mp4",
-  "zone": { "x": 0.15, "y": 0.25, "w": 0.65, "h": 0.65 },
+  "video": "/videos/camera-1.mp4",
+  "zone": { "x": 0.18, "y": 0.2, "w": 0.62, "h": 0.55 },
   "segments": [
-    { "start": 0,   "end": 18,  "classId": "setup",   "confidence": 0.96 },
-    { "start": 18,  "end": 45,  "classId": "work",    "confidence": 0.99 },
-    { "start": 45,  "end": 67,  "classId": "quality", "confidence": 0.94 },
-    { "start": 67,  "end": 92,  "classId": "waiting", "confidence": 0.97 },
-    { "start": 92,  "end": 120, "classId": "work",    "confidence": 0.96 }
+    { "start": 0,   "end": 30,  "classId": "service", "confidence": 0.96 },
+    { "start": 30,  "end": 50,  "classId": "loading", "confidence": 0.92 },
+    { "start": 50,  "end": 96,  "classId": "transit", "confidence": 0.94 },
+    { "start": 96,  "end": 140, "classId": "service", "confidence": 0.97 },
+    { "start": 140, "end": 160, "classId": "idle",    "confidence": 0.90 },
+    { "start": 160, "end": 180, "classId": "safety",  "confidence": 0.93 },
+    { "start": 180, "end": 264, "classId": "service", "confidence": 0.96 },
+    { "start": 264, "end": 291, "classId": "absent",  "confidence": 0.91 }
+  ],
+  "events": [
+    { "time": 140, "type": "warning",   "title": "Простой поста сборки" },
+    { "time": 160, "type": "violation", "title": "Работы у техники без СИЗ" },
+    { "time": 264, "type": "warning",   "title": "Рабочая зона покинута персоналом" }
   ]
 }

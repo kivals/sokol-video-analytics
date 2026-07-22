@@ -15,7 +15,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 p-6">
+    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 p-6 lg:grid-cols-2">
       {cameras.map((camera) => (
         <CameraTile key={camera.id} camera={camera} />
       ))}
