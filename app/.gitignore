@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large media — videos are dropped in by hand, never committed
+/public/**/*.mp4
+/public/new-video/
