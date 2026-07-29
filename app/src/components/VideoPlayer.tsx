@@ -14,6 +14,7 @@ export default function VideoPlayer({
   showZone = true,
   showBadge = true,
   detect = false,
+  live = false,
   sourceLabel,
   onTime,
   onError,
@@ -27,6 +28,7 @@ export default function VideoPlayer({
   showZone?: boolean;
   showBadge?: boolean;
   detect?: boolean;
+  live?: boolean;
   sourceLabel?: string;
   onTime?: (t: number) => void;
   onError?: () => void;
@@ -53,6 +55,30 @@ export default function VideoPlayer({
     const id = setInterval(() => setTick((t) => t + 1), 700);
     return () => clearInterval(id);
   }, []);
+
+  // A "live" feed never restarts: the position comes from the wall clock, so
+  // reloads and navigations resume where a real camera would be, and every
+  // viewer sees the same frame.
+  useEffect(() => {
+    if (!live) {
+      return;
+    }
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+    function seekToWallClock() {
+      if (video && video.duration > 0) {
+        video.currentTime = (Date.now() / 1000) % video.duration;
+      }
+    }
+    if (video.readyState >= 1) {
+      seekToWallClock();
+      return;
+    }
+    video.addEventListener("loadedmetadata", seekToWallClock, { once: true });
+    return () => video.removeEventListener("loadedmetadata", seekToWallClock);
+  }, [live, videoRef, videoError]);
 
   function handleTimeUpdate() {
     const t = videoRef.current?.currentTime ?? 0;

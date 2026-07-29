@@ -140,6 +140,7 @@ export default function CameraTile({ camera }: { camera: Camera }) {
             classes={classes}
             showBadge
             detect
+            live
             sourceLabel={camera.name}
             onTime={handleTime}
             onError={() => setVideoError(true)}

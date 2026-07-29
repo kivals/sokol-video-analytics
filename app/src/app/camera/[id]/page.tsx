@@ -122,6 +122,7 @@ export default function CameraDetailPage() {
                 scenario={scenario}
                 classes={classes}
                 detect
+                live
                 sourceLabel={camera.name}
                 onTime={setCurrentTime}
                 videoRef={videoRef}
