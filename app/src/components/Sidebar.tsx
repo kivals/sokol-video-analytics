@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// /annotation stays routable — it is the demo-prep tool — but is kept out of
+// the nav so it is not part of the shown product surface.
 const NAV_ITEMS = [
   { href: "/", label: "Мониторинг" },
-  { href: "/annotation", label: "Разметка" },
   { href: "/models", label: "Модели" },
   { href: "/analytics", label: "Аналитика" },
   { href: "/settings", label: "Настройки" },

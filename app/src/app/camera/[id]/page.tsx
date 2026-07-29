@@ -105,12 +105,6 @@ export default function CameraDetailPage() {
           >
             Выгрузить разметку (JSON)
           </button>
-          <Link
-            href={`/annotation?camera=${camera.id}`}
-            className="rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-1.5 text-sm text-[var(--text)] hover:border-[var(--accent)]"
-          >
-            Открыть в редакторе
-          </Link>
         </div>
       </div>
 
